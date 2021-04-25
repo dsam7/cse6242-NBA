@@ -20,6 +20,10 @@ Execution:
         c. All NBA team ids can be found here: https://github.com/bttmly/nba/blob/master/data/teams.json.
         d. Run through the cells sequentially to generate CSV data that can be used to create ShotMaps that can be displayed in visualization software like Tableau.
         e. The imgs folder currently stores the visualizations generated on the Phoenix Suns that are shown in the Python Notebook.
+    ii. Tableau Book
+        a. An example Tableau Book has been provided.
+        b. The graphics in it use data from the games the Phoenix Suns played in the Bubble. (one of the CSV files generated in the Python notebook)
+        c. Replace the current data source with NBA API data of your own to make your own visualizations.
 
 2. Prediction Model Comparison:
     i. Python notebooks for pre-processing and models:
