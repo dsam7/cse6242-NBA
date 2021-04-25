@@ -13,7 +13,13 @@ All our code is attached to the official canvas submission under the folder CODE
 
 Execution:
 
-1. Shot Maps: *Insert demo instructions*
+1. Shot Maps:
+    i. Python notebook:
+        a. Once you have cloned this repository, open the Shot Maps folder and open ShotMaps.ipynb.
+        b. All necessary instructions are laid out in the Notebook.
+        c. All NBA team ids can be found here: https://github.com/bttmly/nba/blob/master/data/teams.json.
+        d. Run through the cells sequentially to generate CSV data that can be used to create ShotMaps that can be displayed in visualization software like Tableau.
+        e. The imgs folder currently stores the visualizations generated on the Phoenix Suns that are shown in the Python Notebook.
 
 2. Prediction Model Comparison:
     i. Python notebooks for pre-processing and models:
