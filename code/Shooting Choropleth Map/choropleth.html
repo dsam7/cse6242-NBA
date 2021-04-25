@@ -53,7 +53,7 @@
 		    .style("margin", margin)
 		
 		// enter code to create svg
-		
+		const cats = {"FG_PCT": "Field Goal Percentage", "FG3_PCT": "Three Point Percentage", "FT_PCT": "Free Throw Percentage"};
 		// enter code to create color scale
 		var colorScale = d3.scaleQuantile()
 		  // .domain([0,1,2,3,4,5,6,7,8,9])
@@ -75,9 +75,9 @@
 			for(var i = 0; i < temp.length; i++) {
 			    total += parseFloat(temp[i]);
 			}
-			var avg = total / temp.length;
+			var avg = (total / temp.length * 100).toPrecision(4);
 
-			return `<div>State: ${state}</div><div>${selected}: ${avg}</div>`; 
+			return `<div>State: ${state}</div><div> Average ${cats[selected]}: ${avg} %</div>`; 
 		});
 
         
@@ -92,49 +92,50 @@
 
         Promise.all([
             // enter code to read files
-			  d3.csv("data.csv"), d3.json("us.json")
+			  d3.csv("data.csv"), d3.json("us.json"), d3.csv("bubble_data.csv")
 
 			
         ]).then((values) => {
             // enter code to call ready() with required arguments
-            ready(0, values[1], values[0])}
+            ready(0, values[1], values[0], values[2])}
         );
 		
 		// this function should be called once the data from files have been read
 		// world: topojson from world_countries.json
 		// gameData: data from ratings-by-country.csv
 		
-        function ready(error, world, stateData) {
-             var select = d3.select("#categories")
+        function ready(error, world, stateData, bubbleData) {
+            var select = d3.select("#categories")
              				.selectAll("option")
-					        .data(["FG_PCT", "FG3_PCT", "FT_PCT"])
+					        .data(Object.keys(cats))
 					        .enter().append("option")
 					        .attr("value", function (d) { return d; })
-					        .text(function (d) { return d; })
-					        
-
+					        .text(function (d) { return cats[d]; });
 			
             // event listener for the dropdown. Update choropleth and legend when selection changes. Call createMapAndLegend() with required arguments.
             // create Choropleth with default option. Call createMapAndLegend() with required arguments. 
             d3.select("#categories")
             	.on("change", function() {
             					selected = d3.select(this).property('value')
-								createMapAndLegend(world, stateData	, selected)
+								createMapAndLegend(world, stateData	, selected, bubbleData)
 							});
-
+			selected= d3.select('#categories option:checked').property('value');
+    		createMapAndLegend(world, stateData, selected, bubbleData);
         }
 
 		// this function should create a Choropleth and legend using the world and gameData arguments for a selectedGame
 		// also use this function to update Choropleth and legend when a different game is selected from the dropdown
-        function createMapAndLegend(world, stateData, selectedCategory){ 
+        function createMapAndLegend(world, stateData, selectedCategory, bubbleData) { 
 
 			data = stateData
 
-			colorScale.domain(stateData.map(k => k[selectedCategory])).range(d3.schemeReds[4]);
+			colorScale.domain(stateData.map(k => k[selectedCategory] * 100)).range(d3.schemeReds[4]);
 			svg.call(tip)
 			d3.select(".title_graph").remove("*")
+			d3.select(".bubble_stat").remove("*")
 
-
+			var curr_bubble_stat = bubbleData.filter(k => (k.stat == selectedCategory))[0];
+			var bubble_value = (curr_bubble_stat['value'] * 100).toPrecision(4);
 			svg.append("g")
 			    .selectAll("path")
 			    .data(world.features)
@@ -157,13 +158,13 @@
 							for(var i = 0; i < temp.length; i++) {
 							    total += parseFloat(temp[i]);
 							}
-							var avg = total / temp.length;
+							var avg = total / temp.length * 100;
 
 
 			      			return colorScale(avg)
 			      		}
 
-				        return colorScale(temp[0][selectedCategory])
+				        return colorScale(temp[0][selectedCategory] * 100)
 
 				 	})
 				   	.on('mouseover', tip.show)
@@ -180,23 +181,21 @@
 				svg.select(".legendQuant")
 				  .call(legend);
 
-			let category = "Free Throw Percentage"
-
-			if (selectedCategory == "FG3_PCT") {
-				category = "Three Point Percentage"
-			}
-
-			if (selectedCategory == "FG_PCT") {
-				category = "Field Goal Percentage"
-			}
+			let category = cats[selectedCategory]
 
 			svg.append("text")
 				.attr("class", "title_graph")
 			    .attr("x", width / 2.5)
 			    .attr("y", 0)
-    			.attr("font-size","20px")
+    			.attr("font-size","24px")
 			    .text(`${category} by NBA State in 2020`);
-
+			
+			svg.append("text")
+				.attr("class", "bubble_stat")
+			    .attr("x", width / 4)
+			    .attr("y", -150)
+    			.style("font-size","32px")
+			    .text(`Average ${category} in 2020 Orlando Bubble:  ${bubble_value} %`);
     }
     </script>
 
