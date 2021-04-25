@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+	<!-- add title -->
+	<title id="title"></title>
+
+	<script type="text/javascript" src="../lib/d3.v5.min.js"></script>
+	<script type="text/javascript" src="../lib/d3-geo-projection.v2.min.js"></script>
+	<script type="text/javascript" src="../lib/d3-legend.min.js"></script>
+	<script type="text/javascript" src="../lib/topojson.v2.min.js"></script>
+	<script type="text/javascript" src="../lib/d3-tip.min.js"></script>
+
+
+	
+	<style>
+		.d3-tip {
+		  line-height: 1;
+		  font-weight: bold;
+		  padding: 12px;
+		  background: rgba(0, 0, 0, 0.8);
+		  color: #fff;
+		  border-radius: 2px;
+		}
+	</style>
+</head>
+
+
+<body>
+    <!-- Add heading for the visualization -->
+    <h1>Shooting Statistics for games in NBA States</h1>
+	
+	<!-- Create dropdown element here. Options should be added after reading in game file, they should not be created here.-->
+	<select name="categories" id="categories">
+	
+	<!-- append visualization svg to this div--> 
+    <div id="choropleth"></div>
+
+    <script>
+	
+		// enter code to define margin and dimensions for svg
+
+		const width = 1200;
+		const height = 600;
+		const margin = 5;
+		const padding = 5;
+
+
+		// we are appending SVG first
+		const svg = d3.select("body")
+		    .append("svg")
+		    .attr("viewBox", `-200 -200 ${width + 600} ${height + 600}`)
+		    .style("padding", padding)
+		    .style("margin", margin)
+		
+		// enter code to create svg
+		
+		// enter code to create color scale
+		var colorScale = d3.scaleQuantile()
+		  // .domain([0,1,2,3,4,5,6,7,8,9])
+		  .range(d3.schemeBlues[4]);
+		
+		// enter code to define tooltip
+		var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
+
+			var state = d.properties.NAME
+      		var temp = data.filter(k => k.State == state)
+      		
+      		if(temp.length == 0) {
+				return `<div>State: ${state}</div><div>No NBA Team in this state</div>`;
+      		}
+			
+      		temp = temp.map(k => k[selected])
+
+			var total = 0;
+			for(var i = 0; i < temp.length; i++) {
+			    total += parseFloat(temp[i]);
+			}
+			var avg = total / temp.length;
+
+			return `<div>State: ${state}</div><div>${selected}: ${avg}</div>`; 
+		});
+
+        
+		// enter code to define projection and path required for Choropleth
+
+    	var path = d3.geoPath();
+		var projection = d3.geoAlbersUsa()
+		  .translate([width / 2, height / 2]);
+
+
+		// define any other global variables 
+
+        Promise.all([
+            // enter code to read files
+			  d3.csv("data.csv"), d3.json("us.json")
+
+			
+        ]).then((values) => {
+            // enter code to call ready() with required arguments
+            ready(0, values[1], values[0])}
+        );
+		
+		// this function should be called once the data from files have been read
+		// world: topojson from world_countries.json
+		// gameData: data from ratings-by-country.csv
+		
+        function ready(error, world, stateData) {
+             var select = d3.select("#categories")
+             				.selectAll("option")
+					        .data(["FG_PCT", "FG3_PCT", "FT_PCT"])
+					        .enter().append("option")
+					        .attr("value", function (d) { return d; })
+					        .text(function (d) { return d; })
+					        
+
+			
+            // event listener for the dropdown. Update choropleth and legend when selection changes. Call createMapAndLegend() with required arguments.
+            // create Choropleth with default option. Call createMapAndLegend() with required arguments. 
+            d3.select("#categories")
+            	.on("change", function() {
+            					selected = d3.select(this).property('value')
+								createMapAndLegend(world, stateData	, selected)
+							});
+
+        }
+
+		// this function should create a Choropleth and legend using the world and gameData arguments for a selectedGame
+		// also use this function to update Choropleth and legend when a different game is selected from the dropdown
+        function createMapAndLegend(world, stateData, selectedCategory){ 
+
+			data = stateData
+
+			colorScale.domain(stateData.map(k => k[selectedCategory])).range(d3.schemeReds[4]);
+			svg.call(tip)
+			d3.select(".title_graph").remove("*")
+
+
+			svg.append("g")
+			    .selectAll("path")
+			    .data(world.features)
+			    .enter()
+			    .append("path")
+			      .attr("d", path
+			        .projection(projection)
+			      )
+			      .attr("fill", function (d) {
+			      		var state = d.properties.NAME
+			      		var temp = stateData.filter(k => k.State == state)
+
+				        if(temp.length == 0) {
+			      			return "#808080";
+			      		} 
+
+			      		if (temp.length > 1) {
+							temp = temp.map(k => k[selectedCategory])
+							var total = 0;
+							for(var i = 0; i < temp.length; i++) {
+							    total += parseFloat(temp[i]);
+							}
+							var avg = total / temp.length;
+
+
+			      			return colorScale(avg)
+			      		}
+
+				        return colorScale(temp[0][selectedCategory])
+
+				 	})
+				   	.on('mouseover', tip.show)
+			  		.on('mouseout', tip.hide);
+
+			  svg.append("g")
+				  .attr("class", "legendQuant")
+				  .attr("transform", `translate(${width + 100},20)`);
+
+				var legend = d3.legendColor()
+				  .labelFormat(d3.format(".2f"))
+				  .scale(colorScale);
+
+				svg.select(".legendQuant")
+				  .call(legend);
+
+			let category = "Free Throw Percentage"
+
+			if (selectedCategory == "FG3_PCT") {
+				category = "Three Point Percentage"
+			}
+
+			if (selectedCategory == "FG_PCT") {
+				category = "Field Goal Percentage"
+			}
+
+			svg.append("text")
+				.attr("class", "title_graph")
+			    .attr("x", width / 2.5)
+			    .attr("y", 0)
+    			.attr("font-size","20px")
+			    .text(`${category} by NBA State in 2020`);
+
+    }
+    </script>
+
+</body>
+
+</html>
