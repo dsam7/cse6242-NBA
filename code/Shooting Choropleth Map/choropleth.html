@@ -53,7 +53,7 @@
 		    .style("margin", margin)
 		
 		// enter code to create svg
-		const cats = {"FG_PCT": "Field Goal Percentage", "FG3_PCT": "Three Point Percentage", "FT_PCT": "Free Throw Percentage"};
+		const cats = {"FG_PCT": "FG Percentage", "FG3_PCT": "3PT Percentage", "FT_PCT": "FT Percentage"};
 		// enter code to create color scale
 		var colorScale = d3.scaleQuantile()
 		  // .domain([0,1,2,3,4,5,6,7,8,9])
@@ -195,7 +195,7 @@
 			    .attr("x", width / 4)
 			    .attr("y", -150)
     			.style("font-size","32px")
-			    .text(`Average 'Away' ${category} in 2020 Orlando Bubble:  ${bubble_value} %`);
+			    .text(`Average 'Away Team' ${category} in the 2020 Bubble:  ${bubble_value} %`);
     }
     </script>
 
