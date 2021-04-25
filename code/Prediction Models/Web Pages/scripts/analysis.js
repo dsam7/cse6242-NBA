@@ -1,8 +1,8 @@
 d3.text('../generated_data/home_win_percentages.csv').then(function(data) {
     var rows  = d3.csvParseRows(data);
     rows.slice(1).forEach(function(d) {
-        d[1] = (d[1] * 100) + ' %';
-        d[2] = (d[2] * 100) + ' %';
+        d[1] = d[1] + ' %';
+        d[2] = d[2] + ' %';
     })
 
     var table = d3.select('.win_pcts').append('table')
@@ -36,6 +36,7 @@ d3.text('../generated_data/accuracy.csv').then(function(data) {
     rows.slice(1).forEach(function(d) {
         d[1] = d[1] + ' %';
         d[2] = d[2] + ' %';
+        d[3] = d[3] + ' %';
     })
 
     var table = d3.select('.accuracy').append('table')

@@ -1,6 +1,7 @@
 ﻿,Home Win Percentage,Away Win Percentage
-2007-2020 (non-bubble),0.6111,0.3889
-2020 Bubble Games,0.515,0.485
-Logistic Regression Predictions for Bubble Games,0.615,0.385
-Random Forest Predictions for Bubble Games,0.79,0.21
-Decision Tree Predictions for Bubble Games,0.59,0.41
+2007-2020 (non-bubble),59.1957,40.8043
+2020 Non-Bubble Games,54.1506,45.8494
+2020 Bubble Games,51.2195,48.7805
+Logistic Regression Predictions for Bubble Games,84.878,15.122
+Random Forest Predictions for Bubble Games,86.8293,13.1707
+Decision Tree Predictions for Bubble Games,56.0976,43.9024

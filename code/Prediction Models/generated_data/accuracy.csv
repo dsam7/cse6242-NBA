@@ -1,4 +1,4 @@
-﻿Model,Training Accuracy (2007-2020 games),Testing Accuracy (2020 Bubble Games)
-Logistic Regression, 53.4398, 50.00
-Random Forest, 99.8496, 54.50
-Decision Tree, 95.5263, 54.00
+﻿Model,Training Accuracy (2007-2019 and 2021 Season),Accuracy on 2020 Non-bubble games,Accuracy on 2020 Bubble Games
+Logistic Regression,61.2871,63.5135,52.6829
+Random Forest,98.5192,60.8108,47.8049
+Decision Tree,97.5282,53.7645,45.3659
