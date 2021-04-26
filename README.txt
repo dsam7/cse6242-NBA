@@ -33,7 +33,7 @@ Execution:
         d. In models_predictions.ipynb, run the cells sequentially to create the models and write the predictions to the output file.
     ii. d3 visualizations:
         a. Navigate to the "Prediction Models" folder and run `python -m http.server 8080`.
-        b. Navigate to "Web Pages" folder and open `predictions.html`.
+        b. Navigate to http://localhost:8080/ and in the "Web Pages" folder and open `predictions.html`.
         c. On the page, use the dropdown menu to select a particular game. The UI should update to display the selected game, the actual result of the game, and the winners predicted by the ML models.
         d. In the `analysis.html` web page, view interesting tabulated results and inferences drawn from the predictions of the ML models.
 
