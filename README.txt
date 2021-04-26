@@ -39,8 +39,8 @@ Execution:
 
 3. Choropleth: *Insert demo instructions*
     i. Python notebook:
-        a. Data is already preprocessed and in the folder, but to process the data again you can open the nba_against_stats.ipynb and run all the cells
-        b. This will store the data in the .csv files
+        a. Data is already preprocessed and in the folder, but to process the data again you can navigate to the "Shooting Choropleth Map" folder, open the nba_against_stats.ipynb, and run all the cells
+        b. This will store the preprocessed data in the .csv files
     ii. d3 visualizations:
         a. Navigate to the "Shooting Choropleth Map" folder and run `python -m http.server 8080`.
         b. Once in the http://localhost:8080/, navigate to choropleth.html
